@@ -23,6 +23,11 @@ Why each one:
 | `VERYFRONT_API_URL` | CLI talks to `api.veryfront.com`, where this project does not exist |
 | `VERYFRONT_PROJECT_SLUG` | integration API returns `400 slug: Required` |
 | `*_ALLOW_INTERNAL_EGRESS` | `Outbound network egress blocked for host: api.veryfront.org` |
+
+`*_ALLOW_INTERNAL_EGRESS` is only needed where `api.veryfront.org` resolves to a
+private address — here it is `10.255.128.3` via split-horizon DNS, so the SSRF
+egress guard blocks it by design. `api.veryfront.com` resolves publicly and needs
+no override. If your DNS returns a public address for `.org`, skip these two.
 | `VERYFRONT_API_TOKEN` | unauthenticated |
 
 ## Salesforce access from local dev

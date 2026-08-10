@@ -1,0 +1,24 @@
+{
+  "name": "agentic-case-processing",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "veryfront dev",
+    "build": "veryfront build",
+    "start": "veryfront serve",
+    "eval": "veryfront eval",
+    "deploy": "veryfront deploy"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "react-markdown": "9.0.3",
+    "remark-gfm": "4.0.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "veryfront": "^0.1.1225"
+  }
+}

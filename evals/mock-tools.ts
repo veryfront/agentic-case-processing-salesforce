@@ -53,6 +53,48 @@ export const listCases = tool({
   }),
 });
 
+export const searchKnowledge = tool({
+  id: "search_knowledge",
+  description: "Discover the canonical case triage taxonomy fixture.",
+  inputSchema: defineSchema((v) =>
+    v.object({
+      project_reference: v.string(),
+      query: v.string(),
+    })
+  )(),
+  execute: async ({ project_reference, query }) => {
+    if (project_reference !== "agentic-case-processing") {
+      throw new Error("Knowledge must be searched in the agentic-case-processing project.");
+    }
+
+    if (!query.toLowerCase().includes("taxonomy")) {
+      throw new Error("The knowledge search must discover the case triage taxonomy.");
+    }
+
+    return {
+      query,
+      mode: "search",
+      data: [
+        {
+          path: "knowledge/case-triage-taxonomy.md",
+          matched_fields: ["title", "description"],
+          frontmatter: [
+            { key: "title", value: "Case Triage Taxonomy" },
+            {
+              key: "description",
+              value: "Authoritative taxonomy for classifying and routing Salesforce cases.",
+            },
+          ],
+        },
+      ],
+      page_info: { self: null, first: null, next: null, prev: null },
+      returned: 1,
+      total_matches: 1,
+      shard: { shard_index: 0, shard_count: 1, total_items: 1 },
+    };
+  },
+});
+
 export const getFile = tool({
   id: "get_file",
   description: "Read the case triage taxonomy fixture.",

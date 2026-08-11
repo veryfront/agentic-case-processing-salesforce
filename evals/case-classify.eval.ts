@@ -1,5 +1,5 @@
 import { datasets, evalAgent, metrics } from "veryfront/eval";
-import { getFile } from "./mock-tools";
+import { getFile, searchKnowledge } from "./mock-tools";
 
 export default evalAgent({
   name: "Case Classify applies the taxonomy",
@@ -17,9 +17,11 @@ export default evalAgent({
     },
   ]),
   mockTools: {
+    search_knowledge: searchKnowledge,
     get_file: getFile,
   },
   metrics: [
+    metrics.agent.calledTool("search_knowledge").gate(),
     metrics.agent.calledTool("get_file").gate(),
     metrics.agent.noFailedTools().gate(),
     metrics.answer.contains({ text: "Breakdown" }).gate(),

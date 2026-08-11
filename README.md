@@ -19,7 +19,7 @@ The orchestrator has no direct Salesforce access. Salesforce tools run on the ho
 ## User flow
 
 1. Install dependencies with `npm install`.
-2. Configure the hosted runtime:
+2. Configure the hosted control plane:
 
    ```bash
    export VERYFRONT_API_TOKEN="<your-token>"
@@ -29,7 +29,17 @@ The orchestrator has no direct Salesforce access. Salesforce tools run on the ho
    export VERYFRONT_HOST_ALLOW_INTERNAL_EGRESS=1
    ```
 
-3. Run `npm run dev` and open <http://veryfront.me:3000>.
-4. Select **Triage latest open cases**.
+3. Push the current project files for hosted child runs:
 
-The chat and agents run locally. Salesforce tools run on the hosted Veryfront API using the project's configured service account.
+   ```bash
+   npx veryfront push
+   ```
+
+4. Run `npm run dev` and open <http://veryfront.me:3000>.
+5. Select **Triage latest open cases**.
+
+`npm run dev` serves the app and parent agent runtime locally. In this setup,
+`invoke_agent` creates child runs through the hosted control plane. Child agents
+use the pushed project files, while integrations and their service identities
+execute hosted. Keep both API URL variables set to `https://api.veryfront.org`,
+and push again after changing files that a child agent must use.

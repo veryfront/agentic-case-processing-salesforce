@@ -9,11 +9,9 @@ flowchart TD
   Triage -->|invoke_agent| Classify["Case Classify"]
   Triage -->|invoke_agent| Dispose["Case Dispose"]
 
-  Ingest -.-> SalesforceRead["Salesforce read tools"]
-  Classify -.-> Taxonomy["Project taxonomy"]
-  Dispose -.-> SalesforceWrite["Salesforce write tools"]
-  SalesforceRead -.-> Salesforce["Salesforce"]
-  SalesforceWrite -.-> Salesforce
+  Ingest -.-> SalesforceRead["Read Salesforce"]
+  Classify -.-> Taxonomy["Knowledge Base"]
+  Dispose -.-> SalesforceWrite["Write Salesforce"]
 ```
 
 The orchestrator has no direct Salesforce access. Salesforce tools run on the hosted runtime with the project's service account, and case data is PII-redacted before classification.

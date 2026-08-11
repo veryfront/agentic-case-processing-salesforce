@@ -6,8 +6,8 @@
 flowchart TD
   Chat["Chat interface"] --> Triage["Case Triage"]
   Triage -->|invoke_agent| Ingest["Case Ingest"]
-  Ingest -->|PII-redacted case| Classify["Case Classify"]
-  Classify -->|classification verdict| Dispose["Case Dispose"]
+  Triage -->|invoke_agent| Classify["Case Classify"]
+  Triage -->|invoke_agent| Dispose["Case Dispose"]
 
   Ingest -.-> SalesforceRead["Salesforce read tools"]
   Classify -.-> Taxonomy["Project taxonomy"]

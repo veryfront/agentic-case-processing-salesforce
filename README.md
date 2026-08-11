@@ -12,6 +12,8 @@ flowchart TD
   Ingest -.-> SalesforceRead["Salesforce read tools"]
   Classify -.-> Taxonomy["Project taxonomy"]
   Dispose -.-> SalesforceWrite["Salesforce write tools"]
+  SalesforceRead -.-> Salesforce["Salesforce"]
+  SalesforceWrite -.-> Salesforce
 ```
 
 The orchestrator has no direct Salesforce access. Salesforce tools run on the hosted runtime with the project's service account, and case data is PII-redacted before classification.

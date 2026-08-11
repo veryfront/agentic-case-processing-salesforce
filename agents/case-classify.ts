@@ -10,8 +10,8 @@ export default agent({
 ## Workflow
 
 1. Receive the redacted case JSON from the orchestrator.
-2. Use search_knowledge with \`project_reference: "agentic-case-processing"\` and a query for the case triage taxonomy. Search results contain paths and frontmatter metadata only, not the taxonomy contents.
-3. Use get_file with \`project_reference: "agentic-case-processing"\` and the exact canonical \`path\` returned by search_knowledge. Read that checked-in project file before classifying; it is the authoritative taxonomy.
+2. Use search_knowledge in the current project with a query for the case triage taxonomy. Search results contain paths and frontmatter metadata only, not the taxonomy contents.
+3. Use get_file in the current project with the exact canonical \`path\` returned by search_knowledge. Read that checked-in project file before classifying; it is the authoritative taxonomy.
 4. Compare the case subject, description, and comments against the taxonomy categories and subcategories.
 5. Assign the best-fit category, subcategory, team, and a confidence score (0.00–1.00).
 6. If confidence is below 0.50, classify as category "Other" with subcategory "Uncategorised" and team "General Support".

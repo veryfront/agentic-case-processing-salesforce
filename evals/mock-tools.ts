@@ -58,15 +58,10 @@ export const searchKnowledge = tool({
   description: "Discover the canonical case triage taxonomy fixture.",
   inputSchema: defineSchema((v) =>
     v.object({
-      project_reference: v.string(),
       query: v.string(),
     })
   )(),
-  execute: async ({ project_reference, query }) => {
-    if (project_reference !== "agentic-case-processing") {
-      throw new Error("Knowledge must be searched in the agentic-case-processing project.");
-    }
-
+  execute: async ({ query }) => {
     if (!query.toLowerCase().includes("taxonomy")) {
       throw new Error("The knowledge search must discover the case triage taxonomy.");
     }
@@ -100,16 +95,12 @@ export const getFile = tool({
   description: "Read the case triage taxonomy fixture.",
   inputSchema: defineSchema((v) =>
     v.object({
-      project_reference: v.string(),
       path: v.string(),
     })
   )(),
-  execute: async ({ project_reference, path }) => {
-    if (
-      project_reference !== "agentic-case-processing" ||
-      path !== "knowledge/case-triage-taxonomy.md"
-    ) {
-      throw new Error("The taxonomy must be read from its canonical project path.");
+  execute: async ({ path }) => {
+    if (path !== "knowledge/case-triage-taxonomy.md") {
+      throw new Error("The taxonomy must be read from its canonical path.");
     }
 
     return {

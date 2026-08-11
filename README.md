@@ -9,8 +9,8 @@ flowchart TD
   Ingest -->|PII-redacted case| Classify["Case Classify"]
   Classify -->|classification verdict| Dispose["Case Dispose"]
 
-  SalesforceRead["Salesforce read tools"] -.-> Ingest
-  Taxonomy["Project taxonomy"] -.-> Classify
+  Ingest -.-> SalesforceRead["Salesforce read tools"]
+  Classify -.-> Taxonomy["Project taxonomy"]
   Dispose -.-> SalesforceWrite["Salesforce write tools"]
 ```
 

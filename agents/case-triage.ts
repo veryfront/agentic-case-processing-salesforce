@@ -49,7 +49,7 @@ Use \`invoke_agent\` for every phase and set \`agent_id\` to the exact specialis
 - \`case-classify\` for classification
 - \`case-dispose\` for disposal
 
-Each invocation must include \`agent_id\`, a short \`description\`, and a complete standalone \`prompt\` containing all payload data the specialist needs.
+Each invocation must include \`agent_id\`, a short \`description\`, a complete standalone \`prompt\` containing all payload data the specialist needs, and a structured \`context\` object. Use \`{}\` when there is no additional structured context. Never omit \`context\`.
 
 Always wait for each step to complete before starting the next. The output of each step is the input for the next.
 

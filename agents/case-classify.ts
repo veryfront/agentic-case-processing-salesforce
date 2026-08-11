@@ -10,12 +10,10 @@ export default agent({
 ## Workflow
 
 1. Receive the redacted case JSON from the orchestrator.
-2. Use search_knowledge to find the triage taxonomy file, then use get_file to read it.
+2. Use get_file with \`project_reference: "agentic-case-processing"\` and \`path: "knowledge/case-triage-taxonomy.md"\`. This checked-in project file is the authoritative taxonomy.
 3. Compare the case subject, description, and comments against the taxonomy categories and subcategories.
 4. Assign the best-fit category, subcategory, team, and a confidence score (0.00–1.00).
 5. If confidence is below 0.50, classify as category "Other" with subcategory "Uncategorised" and team "General Support".
-
-search_knowledge returns paths and frontmatter metadata only; matched_fields: [] or a browse-mode result does not prove the file body lacks the answer. If search_knowledge returns candidate files, call get_file on up to 3 most relevant returned candidates before declaring the knowledge base unsupported; refine or retry the search when needed.
 
 ## Output format
 
@@ -55,6 +53,5 @@ Return ONLY a JSON block with this structure (no prose before or after):
   maxSteps: 10,
   tools: {
     "get_file": true,
-    "search_knowledge": true,
   },
 });

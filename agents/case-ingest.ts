@@ -11,7 +11,9 @@ export default agent({
 
 1. Receive a case identifier (Case ID, CaseNumber, or search criteria) from the orchestrator.
 2. Fetch the case using your Salesforce tools. If given search criteria, use list_cases to find the right case, then get_case for full details.
-3. Fetch the case comment history with list_case_activity for additional context.
+3. Fetch the case comment history with list_case_activity for additional context. Use this SOQL shape, replacing only the case ID:
+   \`SELECT Id, ParentId, CommentBody, CreatedDate, IsPublished FROM CaseComment WHERE ParentId = '<case_id>' ORDER BY CreatedDate DESC LIMIT 25\`
+   Salesforce CaseComment uses \`CommentBody\`. Never select a field named \`Body\`.
 4. Normalise the data into a single structured block.
 5. Redact all PII before returning.
 

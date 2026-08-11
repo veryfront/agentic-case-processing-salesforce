@@ -21,17 +21,27 @@ export const getCase = tool({
 
 export const listCaseActivity = tool({
   id: "salesforce__list_case_activity",
-  description: "List Salesforce case activity fixtures.",
-  inputSchema: anyInput,
-  execute: async () => ({
-    comments: [
-      {
-        body: "Jane Doe confirmed via jane@example.com that the unit will not restart.",
-        created_date: "2026-08-11T12:05:00Z",
-        is_public: true,
-      },
-    ],
-  }),
+  description: "List Salesforce CaseComment fixtures using CommentBody (not Body).",
+  inputSchema: defineSchema((v) =>
+    v.object({
+      q: v.string(),
+    })
+  )(),
+  execute: async ({ q }) => {
+    if (!q.includes("CommentBody") || /(?:^|[\s,])Body(?:[\s,]|$)/.test(q)) {
+      throw new Error("CaseComment queries must select CommentBody, not Body.");
+    }
+
+    return {
+      comments: [
+        {
+          body: "Jane Doe confirmed via jane@example.com that the unit will not restart.",
+          created_date: "2026-08-11T12:05:00Z",
+          is_public: true,
+        },
+      ],
+    };
+  },
 });
 
 export const listCases = tool({
@@ -43,30 +53,35 @@ export const listCases = tool({
   }),
 });
 
-export const searchKnowledge = tool({
-  id: "search_knowledge",
-  description: "Find the case triage taxonomy fixture.",
-  inputSchema: anyInput,
-  execute: async () => ({
-    results: [{ path: "knowledge/case-triage-taxonomy.md", title: "Case triage taxonomy" }],
-  }),
-});
-
 export const getFile = tool({
   id: "get_file",
   description: "Read the case triage taxonomy fixture.",
-  inputSchema: anyInput,
-  execute: async () => ({
-    path: "knowledge/case-triage-taxonomy.md",
-    content: [
-      "Taxonomy version: v5",
-      "Category: Breakdown",
-      "Subcategory: Complete equipment failure",
-      "Reason API name: Breakdown",
-      "Team: Field Engineering",
-      "Signals: stopped, won't start, dead, failed, broken, offline",
-    ].join("\n"),
-  }),
+  inputSchema: defineSchema((v) =>
+    v.object({
+      project_reference: v.string(),
+      path: v.string(),
+    })
+  )(),
+  execute: async ({ project_reference, path }) => {
+    if (
+      project_reference !== "agentic-case-processing" ||
+      path !== "knowledge/case-triage-taxonomy.md"
+    ) {
+      throw new Error("The taxonomy must be read from its canonical project path.");
+    }
+
+    return {
+      path,
+      content: [
+        "Taxonomy version: v5",
+        "Category: Breakdown",
+        "Subcategory: Complete equipment failure",
+        "Reason API name: Breakdown",
+        "Team: Field Engineering",
+        "Signals: stopped, won't start, dead, failed, broken, offline",
+      ].join("\n"),
+    };
+  },
 });
 
 export const updateCase = tool({
@@ -91,7 +106,7 @@ export const invokeAgent = tool({
       agent_id: v.string(),
       description: v.string(),
       prompt: v.string(),
-      context: v.record(v.string(), v.unknown()).optional(),
+      context: v.record(v.string(), v.unknown()),
     })
   )(),
   execute: async ({ agent_id }) => {

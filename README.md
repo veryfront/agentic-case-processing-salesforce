@@ -2,34 +2,17 @@
 
 ## Architecture
 
-<table>
-  <tr>
-    <td colspan="5" align="center"><strong>Chat interface</strong><br><code>Find the 5 most recent open cases and triage each one.</code></td>
-  </tr>
-  <tr>
-    <td colspan="5" align="center">↓</td>
-  </tr>
-  <tr>
-    <td colspan="5" align="center"><strong>case-triage</strong><br>Runs each specialist sequentially with <code>invoke_agent</code></td>
-  </tr>
-  <tr>
-    <td colspan="5" align="center">↓ <code>invoke_agent</code></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>case-ingest</strong><br>Fetches cases and redacts PII</td>
-    <td align="center">→</td>
-    <td align="center"><strong>case-classify</strong><br>Applies the triage taxonomy</td>
-    <td align="center">→</td>
-    <td align="center"><strong>case-dispose</strong><br>Updates Reason and posts a comment</td>
-  </tr>
-  <tr>
-    <td align="center">Salesforce<br><code>read tools</code></td>
-    <td></td>
-    <td align="center">Project knowledge<br><code>taxonomy</code></td>
-    <td></td>
-    <td align="center">Salesforce<br><code>write tools</code></td>
-  </tr>
-</table>
+```mermaid
+flowchart TD
+  Chat["Chat interface"] --> Triage["case-triage<br/>Orchestrator"]
+  Triage -->|invoke_agent| Ingest["case-ingest<br/>Fetch and redact PII"]
+  Ingest -->|redacted case| Classify["case-classify<br/>Apply taxonomy"]
+  Classify -->|verdict| Dispose["case-dispose<br/>Update Reason and post comment"]
+
+  SalesforceRead["Salesforce read tools"] -.-> Ingest
+  Taxonomy["Project taxonomy"] -.-> Classify
+  Dispose -.-> SalesforceWrite["Salesforce write tools"]
+```
 
 The orchestrator has no direct Salesforce access. Salesforce tools run on the hosted runtime with the project's service account, and case data is PII-redacted before classification.
 

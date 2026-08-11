@@ -4,10 +4,10 @@
 
 ```mermaid
 flowchart TD
-  Chat["Chat interface"] --> Triage["case-triage<br/>Orchestrator"]
-  Triage -->|invoke_agent| Ingest["case-ingest<br/>Fetch and redact PII"]
-  Ingest -->|redacted case| Classify["case-classify<br/>Apply taxonomy"]
-  Classify -->|verdict| Dispose["case-dispose<br/>Update Reason and post comment"]
+  Chat["Chat interface"] --> Triage["Case Triage"]
+  Triage -->|invoke_agent| Ingest["Case Ingest"]
+  Ingest -->|PII-redacted case| Classify["Case Classify"]
+  Classify -->|classification verdict| Dispose["Case Dispose"]
 
   SalesforceRead["Salesforce read tools"] -.-> Ingest
   Taxonomy["Project taxonomy"] -.-> Classify

@@ -19,6 +19,6 @@
     "remark-gfm": "4.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "veryfront": "^0.1.1228"
+    "veryfront": "0.1.1230-rc.11257"
   }
 }

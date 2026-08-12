@@ -10,12 +10,11 @@ export default agent({
 ## Workflow
 
 1. Receive the redacted case JSON from the orchestrator.
-2. Use search_knowledge to find the triage taxonomy file, then use get_file to read it.
-3. Compare the case subject, description, and comments against the taxonomy categories and subcategories.
-4. Assign the best-fit category, subcategory, team, and a confidence score (0.00–1.00).
-5. If confidence is below 0.50, classify as category "Other" with subcategory "Uncategorised" and team "General Support".
-
-search_knowledge returns paths and frontmatter metadata only; matched_fields: [] or a browse-mode result does not prove the file body lacks the answer. If search_knowledge returns candidate files, call get_file on up to 3 most relevant returned candidates before declaring the knowledge base unsupported; refine or retry the search when needed.
+2. Use search_knowledge in the current project with a query for the case triage taxonomy. Search results contain paths and frontmatter metadata only, not the taxonomy contents.
+3. Use get_file in the current project with the exact canonical \`path\` returned by search_knowledge. Read that checked-in project file before classifying; it is the authoritative taxonomy.
+4. Compare the case subject, description, and comments against the taxonomy categories and subcategories.
+5. Assign the best-fit category, subcategory, team, and a confidence score (0.00–1.00).
+6. If confidence is below 0.50, classify as category "Other" with subcategory "Uncategorised" and team "General Support".
 
 ## Output format
 
@@ -54,7 +53,8 @@ Return ONLY a JSON block with this structure (no prose before or after):
   temperature: 0,
   maxSteps: 10,
   tools: {
-    "get_file": true,
     "search_knowledge": true,
+    "get_file": true,
   },
+  avatarUrl: "https://api.veryfront.org/projects/salesforce-test-d4d57dcb/uploads/assets%2Fagents%2Fcase-classify%2Favatar-5c5580f0721c996cc1416bb0.svg",
 });

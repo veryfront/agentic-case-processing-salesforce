@@ -1,3 +1,8 @@
+---
+title: Case Triage Taxonomy
+description: Authoritative taxonomy for classifying and routing Salesforce cases.
+---
+
 # Case Triage Knowledge — Taxonomy v5
 
 **Owner:** Customer Operations

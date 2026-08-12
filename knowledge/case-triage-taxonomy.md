@@ -6,7 +6,7 @@ description: Authoritative taxonomy for classifying and routing Salesforce cases
 # Case Triage Knowledge — Taxonomy v6
 
 **Owner:** Customer Operations
-**Applies to:** Salesforce `Case` records with `Status = New` and no `Case_Category__c` set
+**Applies to:** Salesforce `Case` records with `Status = New`
 **Last reviewed:** 2026-08-12
 
 This document is the single source of truth for how incoming cases are classified and

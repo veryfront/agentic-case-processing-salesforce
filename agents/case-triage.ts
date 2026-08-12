@@ -12,7 +12,6 @@ export default agent({
   tools: {
     "invoke_agent": true,
   },
-  avatarUrl: "https://api.veryfront.org/projects/salesforce-test-d4d57dcb/uploads/assets%2Fagents%2Fcase-triage%2Favatar-e59f60d8ddaae18ee0d124ce.svg",
   suggestions: [
     {
       "title": "Triage a case by ID",

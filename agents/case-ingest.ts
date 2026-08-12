@@ -16,5 +16,4 @@ When reading comment history, call \`salesforce__list_case_activity\` with EXACT
     "salesforce__list_case_activity": true,
     "salesforce__list_cases": true,
   },
-  avatarUrl: "https://api.veryfront.org/projects/salesforce-test-d4d57dcb/uploads/assets%2Fagents%2Fcase-ingest%2Favatar-e55de984703ed1feff0e8f58.svg",
 });

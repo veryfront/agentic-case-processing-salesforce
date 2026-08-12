@@ -13,5 +13,4 @@ export default agent({
     "salesforce__add_case_comment": true,
     "salesforce__update_case": true,
   },
-  avatarUrl: "https://api.veryfront.org/projects/salesforce-test-d4d57dcb/uploads/assets%2Fagents%2Fcase-dispose%2Favatar-88eea5f05f540637b594b30a.svg",
 });

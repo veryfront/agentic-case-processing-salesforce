@@ -48,7 +48,7 @@ reason:      Performance
 type:        Mechanical
 confidence:  0.88
 team:        Field Engineering
-taxonomy:    v6
+taxonomy:    v1
 agent:       case-triage/2026-08-12T09:15Z
 ```
 

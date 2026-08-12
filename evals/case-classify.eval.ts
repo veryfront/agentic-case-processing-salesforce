@@ -26,5 +26,7 @@ export default evalAgent({
     metrics.agent.noFailedTools().gate(),
     metrics.answer.contains({ text: "Breakdown" }).gate(),
     metrics.answer.contains({ text: "Field Engineering" }).gate(),
+    metrics.answer.contains({ text: "type_api_name" }).gate(),
+    metrics.answer.contains({ text: "Mechanical" }).gate(),
   ],
 });

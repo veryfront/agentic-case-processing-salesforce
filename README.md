@@ -4,17 +4,10 @@
 
 ```mermaid
 flowchart TD
-  Chat["Chat interface"] --> Triage["Case Triage"]
-  Triage -->|invoke_agent| Ingest["Case Ingest"]
-  Triage -->|invoke_agent| Classify["Case Classify"]
-  Triage -->|invoke_agent| Dispose["Case Dispose"]
-
-  Ingest -.-> SalesforceRead["Read Salesforce"]
-  Classify -.-> Taxonomy["Knowledge Base"]
-  Dispose -.-> SalesforceWrite["Write Salesforce"]
+  Triage["Case Triage Agent"] --> Ingest["Case Ingest Agent"]
+  Triage["Case Triage Agent"] --> Classify["Case Classify Agent"]
+  Triage["Case Triage Agent"] --> Dispose["Case Dispose Agent"]
 ```
-
-The orchestrator has no direct Salesforce access. Salesforce tools run on the hosted runtime with the project's service account, and case data is PII-redacted before classification.
 
 ## User flow
 

@@ -33,7 +33,7 @@ Use this EXACT format. Replace placeholders with values from the classification 
 {summary}
 Suggested team: {team}
 
-----
+---
 category:    {category}
 subcategory: {subcategory}
 reason:      {reason_api_name}

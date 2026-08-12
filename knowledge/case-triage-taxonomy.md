@@ -24,9 +24,8 @@ For each new case:
 3. Set the `Reason` picklist on the case to the matching **API Name** from §2.
 4. Pick exactly **one** case type from §2b based on the equipment domain signals in the case.
 5. Set the `Type` picklist on the case to the matching **API Name** from §2b.
-6. Apply the overrides in §5 — these can change the routing regardless of category.
-7. Score confidence per §6.
-8. Post the triage comment on the case in the format defined in §7 and, if confidence is
+6. Score confidence per §5.
+7. Post the triage comment on the case in the format defined in §6 and, if confidence is
    above threshold, set the fields on the case.
 
 The agent never closes, merges, or replies to a customer case. Triage only.
@@ -83,7 +82,7 @@ When signals disagree, weight them in this order:
 
 | Rank | Signal | Notes |
 | --- | --- | --- |
-| 1 | Explicit safety/outage language | Triggers §5 overrides before anything else |
+| 1 | Explicit safety/outage language | Weighed above every other signal |
 | 2 | Case Description body | The customer's own words, fullest context |
 | 3 | Linked Asset / product model | e.g. `GC5060` implies Generator product line |
 | 4 | Subject line | Often written by an agent, not the customer — can be misleading |
@@ -276,23 +275,7 @@ manual handling.
 
 ---
 
-## 5. Overrides
-
-These are checked before category routing and applied on top of it.
-
-- **Injury, fire, electric shock, gas release, or environmental discharge** — set priority
-  to Critical, route to Field Engineering, and page the on-call HSE duty manager. Post to
-  `#safety-escalation` as well as `#case-triage`. Never auto-route these silently.
-- **Complete site outage or generator offline** — priority Critical, Field Engineering,
-  first response 1 hour regardless of category.
-- **Regulatory body, insurer, or legal counsel named as a party** — route to Legal &
-  Compliance and stop. Do not set a category.
-- **Press or media enquiry** — route to Communications. Do not set a category.
-- **Account service tier = Platinum** — raise priority one level. Does not change routing.
-
----
-
-## 6. Confidence
+## 5. Confidence
 
 Report a value between 0 and 1.
 
@@ -314,7 +297,7 @@ in ten seconds costs far less than a misrouted case that sits in the wrong queue
 
 ---
 
-## 7. Output format
+## 6. Output format
 
 Post one comment on the case. Body first, then a metadata block.
 
@@ -343,12 +326,11 @@ Rules:
 - `reason` must be one of the seven API Names from §2 — no other values are valid.
 - `type` must be one of the five API Names from §2b — no other values are valid.
 - `agent` is the run identifier plus an ISO-8601 UTC timestamp.
-- If an override from §5 fired, add an `override:` line naming it.
 - If confidence is below 0.80, prefix the summary line with `(unconfirmed)`.
 
 ---
 
-## 8. Worked examples
+## 7. Worked examples
 
 **"Performance inadequate for second consecutive week"**
 → Performance / Degraded output, Field Engineering, `Reason: Performance`, `Type: Mechanical`, `recurring: true`.

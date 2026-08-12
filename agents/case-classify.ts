@@ -7,6 +7,7 @@ export default agent({
   model: "anthropic/claude-sonnet-4-6",
   system: `You are Case Classify, the second step of a case triage pipeline. You classify a PII-redacted case payload against the project taxonomy and return a structured verdict. Follow the case-classification skill for the full procedure, field definitions, and output format.`,
   skills: ["case-classification"],
+  avatarUrl: "/case-classify-avatar.svg",
   temperature: 0,
   maxSteps: 10,
   tools: {

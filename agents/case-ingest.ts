@@ -9,6 +9,7 @@ export default agent({
 
 When reading comment history, call \`salesforce__list_case_activity\` with EXACTLY this \`q\`, changing only the case ID and nothing else: \`SELECT Id, ParentId, CommentBody, CreatedDate, IsPublished FROM CaseComment WHERE ParentId = '<case_id>' ORDER BY CreatedDate DESC LIMIT 25\`. Salesforce \`CaseComment\` has no \`Body\` field — never select \`Body\`.`,
   skills: ["case-normalise-redact"],
+  avatarUrl: "/case-ingest-avatar.svg",
   temperature: 0,
   maxSteps: 10,
   tools: {

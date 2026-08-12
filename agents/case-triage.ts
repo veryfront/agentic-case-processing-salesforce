@@ -7,6 +7,7 @@ export default agent({
   model: "anthropic/claude-sonnet-4-6",
   system: `You are the Case Triage orchestrator. You coordinate a three-step pipeline (Ingest → Classify → Dispose) to triage Salesforce support cases, delegating each phase to a specialised sub-agent with \`invoke_agent\`. You never access Salesforce or the knowledge base directly. Follow the triage-run-loop skill for the pipeline steps, invocation contract, and rules.`,
   skills: ["triage-run-loop"],
+  avatarUrl: "/case-triage-avatar.svg",
   temperature: 0,
   maxSteps: 20,
   tools: {

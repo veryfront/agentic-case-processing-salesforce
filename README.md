@@ -1,4 +1,4 @@
-# Salesforce Case Triage
+# Agentic Case Processing
 
 An AI template, built on [Veryfront](https://veryfront.com), that triages new
 Salesforce Service Cloud cases on a schedule. For each new case it assigns a

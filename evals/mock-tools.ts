@@ -106,7 +106,7 @@ export const getFile = tool({
     return {
       path,
       content: [
-        "Taxonomy version: v6",
+        "Taxonomy version: v1",
         "Category: Breakdown",
         "Subcategory: Complete equipment failure",
         "Reason API name: Breakdown",
@@ -165,7 +165,7 @@ export const invokeAgent = tool({
         confidence: 0.98,
         team: "Field Engineering",
         summary: "Customer generator stopped and will not restart.",
-        taxonomy_version: "v6",
+        taxonomy_version: "v1",
       };
     }
 

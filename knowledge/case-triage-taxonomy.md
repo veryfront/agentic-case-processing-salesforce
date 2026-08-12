@@ -3,7 +3,7 @@ title: Case Triage Taxonomy
 description: Authoritative taxonomy for classifying and routing Salesforce cases.
 ---
 
-# Case Triage Knowledge — Taxonomy v6
+# Case Triage Knowledge — Taxonomy v1
 
 **Owner:** Customer Operations
 **Applies to:** Salesforce `Case` records with `Status = New`
@@ -331,7 +331,7 @@ reason:      {Salesforce Reason API Name from §2}
 type:        {Salesforce Type API Name from §2b}
 confidence:  {0.00–1.00}
 team:        {Team}
-taxonomy:    v6
+taxonomy:    v1
 agent:       case-triage/{ISO-8601 UTC timestamp}
 ```
 
@@ -394,26 +394,3 @@ The fault is in the electronic control system. Confidence 0.85+.
 **"Foundation cracking under generator pad"**
 → Equipment Design / Structural / housing, Product Engineering, `Reason: Equipment Design`, `Type: Structural`.
 Structural concern with the mounting platform.
-
----
-
-## 9. Changelog
-
-- **v6 (2026-08-12)** — Added Salesforce Case Type picklist (§2b) with five canonical
-  values: Mechanical, Electrical, Electronic, Structural, Other. Added type selection
-  rules and type mapping guidance to every taxonomy category in §4. Updated output format
-  (§7) to include `type` field. Updated all worked examples (§8) to include Type. Agent
-  must now set both Reason and Type on every classified case.
-- **v5 (2026-08-10)** — Restructured taxonomy to align with Salesforce `Reason` picklist.
-  Seven top-level categories now map 1:1 to picklist API Names: Installation, Equipment
-  Complexity, Performance, Breakdown, Equipment Design, Feedback, Other. Merged Warranty &
-  Parts into Breakdown. Merged Documentation & Training and Commercial into Feedback and
-  Other respectively. Added `reason` field to output format. Bumped auto-apply threshold
-  check to reference new section numbers.
-- **v4 (2026-08-01)** — Split Installation & Commissioning out of Performance. Added
-  `safety-adjacent` flag. Raised auto-apply threshold from 0.75 to 0.80 after Q2 review
-  found 11% of auto-routed Engineering cases were warranty cases.
-- **v3 (2026-02-14)** — Added Controls Support as a routing target.
-- **v2 (2025-09-30)** — Introduced confidence bands.
-
-<!-- Reviewed by Matt 12.08.26 11:59 -->

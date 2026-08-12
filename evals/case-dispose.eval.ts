@@ -17,7 +17,7 @@ export default evalAgent({
         confidence: 0.98,
         team: "Field Engineering",
         summary: "Customer generator stopped and will not restart.",
-        taxonomy_version: "v6",
+        taxonomy_version: "v1",
       }),
     },
   ]),

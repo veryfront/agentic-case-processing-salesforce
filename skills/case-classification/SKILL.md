@@ -46,7 +46,7 @@ Return ONLY a JSON block with this structure (no prose before or after):
   "confidence": 0.87,
   "team": "...",
   "summary": "One-sentence plain-English summary of the customer issue, no PII.",
-  "taxonomy_version": "v6"
+  "taxonomy_version": "v1"
 }
 ```
 

@@ -13,5 +13,4 @@ export default agent({
     "get_file": true,
     "search_knowledge": true,
   },
-  avatarUrl: "https://api.veryfront.org/projects/salesforce-test-d4d57dcb/uploads/assets%2Fagents%2Fcase-classify%2Favatar-5c5580f0721c996cc1416bb0.svg",
 });

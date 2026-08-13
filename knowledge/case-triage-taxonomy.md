@@ -3,10 +3,10 @@ title: Case Triage Taxonomy
 description: Authoritative taxonomy for classifying and routing Salesforce cases.
 ---
 
-# Case Triage Knowledge — Taxonomy v6
+# Case Triage Knowledge — Taxonomy v1
 
 **Owner:** Customer Operations
-**Applies to:** Salesforce `Case` records with `Status = New` and no `Case_Category__c` set
+**Applies to:** Salesforce `Case` records with `Status = New`
 **Last reviewed:** 2026-08-12
 
 This document is the single source of truth for how incoming cases are classified and
@@ -24,9 +24,8 @@ For each new case:
 3. Set the `Reason` picklist on the case to the matching **API Name** from §2.
 4. Pick exactly **one** case type from §2b based on the equipment domain signals in the case.
 5. Set the `Type` picklist on the case to the matching **API Name** from §2b.
-6. Apply the overrides in §5 — these can change the routing regardless of category.
-7. Score confidence per §6.
-8. Post the triage comment on the case in the format defined in §7 and, if confidence is
+6. Score confidence per §5.
+7. Post the triage comment on the case in the format defined in §6 and, if confidence is
    above threshold, set the fields on the case.
 
 The agent never closes, merges, or replies to a customer case. Triage only.
@@ -83,7 +82,7 @@ When signals disagree, weight them in this order:
 
 | Rank | Signal | Notes |
 | --- | --- | --- |
-| 1 | Explicit safety/outage language | Triggers §5 overrides before anything else |
+| 1 | Explicit safety/outage language | Weighed above every other signal |
 | 2 | Case Description body | The customer's own words, fullest context |
 | 3 | Linked Asset / product model | e.g. `GC5060` implies Generator product line |
 | 4 | Subject line | Often written by an agent, not the customer — can be misleading |
@@ -276,23 +275,7 @@ manual handling.
 
 ---
 
-## 5. Overrides
-
-These are checked before category routing and applied on top of it.
-
-- **Injury, fire, electric shock, gas release, or environmental discharge** — set priority
-  to Critical, route to Field Engineering, and page the on-call HSE duty manager. Post to
-  `#safety-escalation` as well as `#case-triage`. Never auto-route these silently.
-- **Complete site outage or generator offline** — priority Critical, Field Engineering,
-  first response 1 hour regardless of category.
-- **Regulatory body, insurer, or legal counsel named as a party** — route to Legal &
-  Compliance and stop. Do not set a category.
-- **Press or media enquiry** — route to Communications. Do not set a category.
-- **Account service tier = Platinum** — raise priority one level. Does not change routing.
-
----
-
-## 6. Confidence
+## 5. Confidence
 
 Report a value between 0 and 1.
 
@@ -314,7 +297,7 @@ in ten seconds costs far less than a misrouted case that sits in the wrong queue
 
 ---
 
-## 7. Output format
+## 6. Output format
 
 Post one comment on the case. Body first, then a metadata block.
 
@@ -331,7 +314,7 @@ reason:      {Salesforce Reason API Name from §2}
 type:        {Salesforce Type API Name from §2b}
 confidence:  {0.00–1.00}
 team:        {Team}
-taxonomy:    v6
+taxonomy:    v1
 agent:       case-triage/{ISO-8601 UTC timestamp}
 ```
 
@@ -343,12 +326,11 @@ Rules:
 - `reason` must be one of the seven API Names from §2 — no other values are valid.
 - `type` must be one of the five API Names from §2b — no other values are valid.
 - `agent` is the run identifier plus an ISO-8601 UTC timestamp.
-- If an override from §5 fired, add an `override:` line naming it.
 - If confidence is below 0.80, prefix the summary line with `(unconfirmed)`.
 
 ---
 
-## 8. Worked examples
+## 7. Worked examples
 
 **"Performance inadequate for second consecutive week"**
 → Performance / Degraded output, Field Engineering, `Reason: Performance`, `Type: Mechanical`, `recurring: true`.
@@ -394,26 +376,3 @@ The fault is in the electronic control system. Confidence 0.85+.
 **"Foundation cracking under generator pad"**
 → Equipment Design / Structural / housing, Product Engineering, `Reason: Equipment Design`, `Type: Structural`.
 Structural concern with the mounting platform.
-
----
-
-## 9. Changelog
-
-- **v6 (2026-08-12)** — Added Salesforce Case Type picklist (§2b) with five canonical
-  values: Mechanical, Electrical, Electronic, Structural, Other. Added type selection
-  rules and type mapping guidance to every taxonomy category in §4. Updated output format
-  (§7) to include `type` field. Updated all worked examples (§8) to include Type. Agent
-  must now set both Reason and Type on every classified case.
-- **v5 (2026-08-10)** — Restructured taxonomy to align with Salesforce `Reason` picklist.
-  Seven top-level categories now map 1:1 to picklist API Names: Installation, Equipment
-  Complexity, Performance, Breakdown, Equipment Design, Feedback, Other. Merged Warranty &
-  Parts into Breakdown. Merged Documentation & Training and Commercial into Feedback and
-  Other respectively. Added `reason` field to output format. Bumped auto-apply threshold
-  check to reference new section numbers.
-- **v4 (2026-08-01)** — Split Installation & Commissioning out of Performance. Added
-  `safety-adjacent` flag. Raised auto-apply threshold from 0.75 to 0.80 after Q2 review
-  found 11% of auto-routed Engineering cases were warranty cases.
-- **v3 (2026-02-14)** — Added Controls Support as a routing target.
-- **v2 (2025-09-30)** — Introduced confidence bands.
-
-<!-- Reviewed by Matt 12.08.26 11:59 -->

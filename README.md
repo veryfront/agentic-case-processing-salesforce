@@ -1,35 +1,111 @@
-# Salesforce Case Triage
+# Agentic Case Processing
 
-## Architecture
+An AI template, built on [Veryfront](https://veryfront.com), that triages new
+Salesforce Service Cloud cases on a schedule. For each new case it assigns a
+category and type, names the team that should own it, sets the case `Reason` and
+`Type`, and records the verdict as a private case comment with a confidence score.
+
+It runs against a **standard Salesforce org**. The `Reason` and `Type` values are
+the standard Salesforce Case picklists, so there are no custom fields to create
+and no configuration to change — connect an org and it works.
+
+## How it works
+
+Four agents run as a pipeline. An orchestrator coordinates the run; three
+specialists each handle one step with the minimum access that step requires.
 
 ```mermaid
-flowchart TD
-  Triage["Case Triage Agent"] --> Ingest["Case Ingest Agent"]
-  Triage["Case Triage Agent"] --> Classify["Case Classify Agent"]
-  Triage["Case Triage Agent"] --> Dispose["Case Dispose Agent"]
+flowchart LR
+  Triage["Case Triage<br/>(orchestrator)"] --> Ingest["Case Ingest<br/>fetch + redact PII"]
+  Ingest --> Classify["Case Classify<br/>classify vs taxonomy"]
+  Classify --> Dispose["Case Dispose<br/>set Reason + Type, comment"]
 ```
 
-## User flow
+| Agent | Responsibility | Salesforce access |
+|---|---|---|
+| `case-triage` | Orchestrates the run and delegates each step | None |
+| `case-ingest` | Fetches the case and redacts PII | Read-only |
+| `case-classify` | Classifies against the taxonomy | None |
+| `case-dispose` | Sets `Reason` + `Type`, posts the comment | Comment + those two fields |
 
-1. Install dependencies with `npm install`.
-2. Create local hosted-control-plane configuration:
+Each step runs in an isolated context via `invoke_agent`. The raw case body —
+untrusted text that may contain PII — is read by Ingest and Classify and never
+reaches the orchestrator, which sees only a structured verdict.
 
-   ```bash
-   cp .env.example .env.local
-   ```
+## What it writes
 
-   Set `VERYFRONT_API_TOKEN` in `.env.local`.
+Each run posts one private comment on the case:
 
-3. Push the current project files for hosted child runs:
+```
+[Triage] Performance → Degraded output
+Customer reports the generator is producing below its rated output under load.
+Suggested team: Field Engineering
 
-   ```bash
-   npx veryfront push
-   ```
+----
+category:    Performance
+subcategory: Degraded output
+reason:      Performance
+type:        Mechanical
+confidence:  0.88
+team:        Field Engineering
+taxonomy:    v1
+agent:       case-triage/2026-08-12T09:15Z
+```
 
-4. Run `npm run dev` and open <http://veryfront.me:3000>.
-5. Select **Triage latest open cases**.
+The comment is written with `IsPublished: false`, so it stays internal. The
+metadata block below the rule is a stable contract for reporting and measuring
+accuracy.
 
-`npm run dev` serves the app and parent agent runtime locally. In this setup,
-`invoke_agent` creates child runs through the hosted control plane. Child agents
-use the pushed project files, while integrations and their service identities
-execute hosted. Push again after changing files that a child agent must use.
+## Safety model
+
+- **Least privilege.** `case-dispose` can add a comment and set the `Reason` and
+  `Type` fields, and nothing else. It cannot reassign, close, or reprioritise a
+  case, because it has no tool for those operations — the limit is enforced by
+  tool registration, not by a prompt.
+- **PII containment.** `case-ingest` redacts names, emails, phone numbers, and
+  addresses before any text reaches classification or a written comment.
+- **Private comments.** Confidence scores are never surfaced to a customer.
+
+## Prerequisites
+
+- A Salesforce org with API access (a free
+  [Developer Edition](https://developer.salesforce.com/signup) org works).
+- A Veryfront account and a project API token.
+
+## Run it
+
+```bash
+npm install
+cp .env.example .env.local   # set VERYFRONT_API_TOKEN
+npx veryfront push           # push project files for hosted child runs
+npm run dev                  # serves the app + parent agent runtime locally
+```
+
+Open the app, connect Salesforce when prompted (OAuth, via the Veryfront
+Integrations panel — the connection uses an integration user; credentials are
+held by the platform and never enter an agent's context), and select
+**Triage latest open cases**.
+
+To run it unattended, point a schedule at the `case-triage` agent.
+
+## Evaluate
+
+```bash
+npm run eval
+```
+
+Evals target the same agent definitions and check tool behaviour and output
+shape for each step (`evals/case-*.eval.ts`).
+
+## Project layout
+
+```
+agents/      case-triage (orchestrator), case-ingest, case-classify, case-dispose
+knowledge/   case-triage-taxonomy.md — the classification + routing spec
+evals/       one eval per agent, plus mock tools
+app/         chat UI and AG-UI route
+```
+
+## License
+
+[Apache-2.0](./LICENSE).

@@ -86,7 +86,9 @@ Integrations panel — the connection uses an integration user; credentials are
 held by the platform and never enter an agent's context), and select
 **Triage latest open cases**.
 
-To run it unattended, point a schedule at the `case-triage` agent.
+To run it unattended, `schedules/triage-new-cases.ts` runs the `case-triage`
+agent every 10 minutes. Adjust the cron expression or timezone, then push the
+project to activate it.
 
 ## Evaluate
 
@@ -103,6 +105,7 @@ shape for each step (`evals/case-*.eval.ts`).
 agents/      case-triage (orchestrator), case-ingest, case-classify, case-dispose
 knowledge/   case-triage-taxonomy.md — the classification + routing spec
 evals/       one eval per agent, plus mock tools
+schedules/   triage-new-cases.ts — runs case-triage every 10 minutes
 app/         chat UI and AG-UI route
 ```
 

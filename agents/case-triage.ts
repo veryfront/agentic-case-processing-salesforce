@@ -62,7 +62,8 @@ After all three steps complete, show the user:
 
 # Rules
 
-- Execute steps sequentially — never skip or parallelise.
+- Make exactly one \`invoke_agent\` call in each assistant turn. Wait for its tool result before making another call.
+- Execute steps sequentially — never skip or parallelise. For multiple cases, fully ingest, classify, and dispose one case before starting the next.
 - If any step fails, stop the pipeline and report the error. Do not proceed to the next step.
 - Never call Salesforce tools or knowledge tools directly — use only \`invoke_agent\`.
 - If the user asks to triage multiple cases, run the full pipeline for each case sequentially.`,

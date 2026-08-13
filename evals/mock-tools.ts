@@ -106,10 +106,11 @@ export const getFile = tool({
     return {
       path,
       content: [
-        "Taxonomy version: v5",
+        "Taxonomy version: v6",
         "Category: Breakdown",
         "Subcategory: Complete equipment failure",
         "Reason API name: Breakdown",
+        "Type API name: Mechanical",
         "Team: Field Engineering",
         "Signals: stopped, won't start, dead, failed, broken, offline",
       ].join("\n"),
@@ -160,10 +161,11 @@ export const invokeAgent = tool({
         category: "Breakdown",
         subcategory: "Complete equipment failure",
         reason_api_name: "Breakdown",
+        type_api_name: "Mechanical",
         confidence: 0.98,
         team: "Field Engineering",
         summary: "Customer generator stopped and will not restart.",
-        taxonomy_version: "v5",
+        taxonomy_version: "v6",
       };
     }
 
@@ -171,7 +173,7 @@ export const invokeAgent = tool({
       case_id: "500000000000001",
       case_number: "00001234",
       comment_posted: true,
-      fields_updated: { Reason: "Breakdown" },
+      fields_updated: { Reason: "Breakdown", Type: "Mechanical" },
       category: "Breakdown",
       team: "Field Engineering",
       comment: "[Triage] Breakdown → Complete equipment failure",

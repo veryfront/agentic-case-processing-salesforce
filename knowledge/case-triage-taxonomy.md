@@ -3,11 +3,11 @@ title: Case Triage Taxonomy
 description: Authoritative taxonomy for classifying and routing Salesforce cases.
 ---
 
-# Case Triage Knowledge — Taxonomy v5
+# Case Triage Knowledge — Taxonomy v6
 
 **Owner:** Customer Operations
 **Applies to:** Salesforce `Case` records with `Status = New` and no `Case_Category__c` set
-**Last reviewed:** 2026-08-10
+**Last reviewed:** 2026-08-12
 
 This document is the single source of truth for how incoming cases are classified and
 routed. The triage agent reads it on every run. If a rule here conflicts with something
@@ -20,11 +20,13 @@ learned from past cases, this document wins.
 For each new case:
 
 1. Read `Subject`, `Description`, `Account`, `Asset`/`Product`, and any inbound email body.
-2. Pick exactly **one** category and **one** subcategory from §3.
-3. Set the `Reason` picklist on the case to the matching **API Name** from §3.
-4. Apply the overrides in §4 — these can change the routing regardless of category.
-5. Score confidence per §5.
-6. Post the triage comment on the case in the format defined in §6 and, if confidence is
+2. Pick exactly **one** category and **one** subcategory from §4.
+3. Set the `Reason` picklist on the case to the matching **API Name** from §2.
+4. Pick exactly **one** case type from §2b based on the equipment domain signals in the case.
+5. Set the `Type` picklist on the case to the matching **API Name** from §2b.
+6. Apply the overrides in §5 — these can change the routing regardless of category.
+7. Score confidence per §6.
+8. Post the triage comment on the case in the format defined in §7 and, if confidence is
    above threshold, set the fields on the case.
 
 The agent never closes, merges, or replies to a customer case. Triage only.
@@ -33,7 +35,7 @@ The agent never closes, merges, or replies to a customer case. Triage only.
 
 ## 2. Salesforce Case Reason picklist — canonical values
 
-Every category in §3 maps to exactly one `Reason` picklist API name. The agent must use
+Every category in §4 maps to exactly one `Reason` picklist API name. The agent must use
 the API Name verbatim when writing to Salesforce. No other values are valid.
 
 | API Name              | Display Label          |
@@ -45,6 +47,33 @@ the API Name verbatim when writing to Salesforce. No other values are valid.
 | Equipment Design      | Equipment Design       |
 | Feedback              | Feedback               |
 | Other                 | Other                  |
+
+---
+
+## 2b. Salesforce Case Type picklist — canonical values
+
+Each case must also be assigned exactly one `Type` picklist value. The agent must use the
+API Name verbatim when writing to Salesforce. No other values are valid.
+
+| API Name    | Display Label | When to use |
+| ----------- | ------------- | ----------- |
+| Mechanical  | Mechanical    | The case relates to mechanical components: rotating parts, shafts, bearings, housings, mounts, vibration, alignment, structural frames, or physical assembly. |
+| Electrical  | Electrical    | The case relates to electrical systems: wiring, termination, power distribution, switchgear, circuit breakers, transformers, grounding, or high-voltage components. |
+| Electronic  | Electronic    | The case relates to electronic systems: control boards, PLCs, firmware, sensors, actuators, HMI displays, communication modules, or software/digital interfaces. |
+| Structural  | Structural    | The case relates to structural elements: foundations, enclosures, frames, canopies, civil works, mounting platforms, or physical containment. |
+| Other       | Other         | The case does not clearly relate to any of the above domains, or the description is too vague to determine an equipment type. Also use for purely commercial, feedback, or administrative cases. |
+
+### Type selection rules
+
+- **One type only.** If a case spans multiple equipment domains, choose the one most central
+  to the customer's stated problem. For example, a vibration issue in a generator bearing
+  is Mechanical, even if wiring was mentioned in passing.
+- **Feedback and commercial cases** default to `Other` unless the feedback specifically
+  describes a mechanical, electrical, electronic, or structural concern.
+- **Installation cases** should be typed by the installation domain: wiring installation →
+  Electrical, mechanical mounting → Mechanical, controls integration → Electronic, site
+  preparation → Structural.
+- **When uncertain**, choose `Other`. An honest `Other` is better than a wrong type.
 
 ---
 
@@ -91,6 +120,8 @@ the customer is asking for direction, it belongs here — not in §4.3 or §4.5.
 questions must never be answered from memory or from a generic template; route them so a
 qualified engineer answers against the drawing pack for that specific serial number.
 
+**Type mapping:** Electrical wiring → `Type: Electrical`. Mechanical mounting → `Type: Mechanical`. Controls & network → `Type: Electronic`. Site preparation → `Type: Structural`. Commissioning → determine from dominant domain, default `Type: Other`.
+
 ---
 
 ### 4.2 Equipment Complexity (`Reason: Equipment Complexity`)
@@ -115,6 +146,8 @@ running but the customer cannot configure or integrate it effectively, use this 
 Distinguish from Breakdown (§4.4) — if the equipment is functioning but confusing, it is
 complexity, not a fault.
 
+**Type mapping:** Controls & programming → `Type: Electronic`. Multi-unit / system integration → determine from dominant equipment domain. Feature usage → `Type: Other` unless a specific domain is evident.
+
 ---
 
 ### 4.3 Performance (`Reason: Performance`)
@@ -136,6 +169,8 @@ any customer-supplied trend data or load figures.
 raises priority one level and sets `recurring: true`. Recurring performance cases must be
 checked against open cases on the same Asset before routing — if one exists, flag as a
 possible duplicate rather than opening a parallel investigation.
+
+**Type mapping:** Vibration or noise → `Type: Mechanical`. Unexpected shutdown → determine from fault description (electrical trip → `Type: Electrical`, control fault → `Type: Electronic`, mechanical seizure → `Type: Mechanical`). Fuel/efficiency → `Type: Mechanical` unless electronic controls are implicated. If ambiguous, default to `Type: Mechanical`.
 
 ---
 
@@ -161,6 +196,8 @@ otherwise operational, this is still Breakdown (not Equipment Design). Only rout
 Equipment Design (§4.5) when the customer or an internal engineer asserts a systemic
 fault across multiple units or serial numbers.
 
+**Type mapping:** Component failure (mechanical) → `Type: Mechanical`. Component failure (electrical) → `Type: Electrical`. Complete equipment failure → determine from description (motor/engine/bearing → Mechanical, wiring/power → Electrical, control board → Electronic). Warranty/Parts/RMA → determine from the failed component domain. Default to `Type: Mechanical` when the failure domain is unclear.
+
 ---
 
 ### 4.5 Equipment Design (`Reason: Equipment Design`)
@@ -182,6 +219,8 @@ engineering drawings or FEA attached, references to a change notice.
 customer or an internal engineer is asserting a systemic fault, or when the same failure
 mode appears on two or more serial numbers. A single failed component is a Breakdown case
 (§4.4), not a design case. When in doubt, choose §4.4 and let Quality escalate.
+
+**Type mapping:** Rotating assembly → `Type: Mechanical`. Structural / housing → `Type: Structural`. Electrical design → `Type: Electrical`. Software / firmware → `Type: Electronic`. Fleet-wide → determine from the affected domain.
 
 ---
 
@@ -208,6 +247,8 @@ maintenance on a live machine, add `safety-adjacent: true` and copy Field Engine
 Ambiguity in a torque figure, an isolation step, or a service interval is not a
 publications-only problem.
 
+**Type mapping:** Default to `Type: Other` unless the feedback specifically describes a concern in a mechanical, electrical, electronic, or structural domain (e.g. "the wiring diagram in the manual is wrong" → `Type: Electrical`).
+
 ---
 
 ### 4.7 Other (`Reason: Other`)
@@ -230,6 +271,8 @@ taxonomy.
 **Note:** An honest `Other / Uncategorised` is better than a confident wrong route. If the
 case spans two categories and the agent cannot determine a primary intent, route here for
 manual handling.
+
+**Type mapping:** Default to `Type: Other`.
 
 ---
 
@@ -285,9 +328,10 @@ Suggested team: {Team}
 category:    {Category}
 subcategory: {Subcategory}
 reason:      {Salesforce Reason API Name from §2}
+type:        {Salesforce Type API Name from §2b}
 confidence:  {0.00–1.00}
 team:        {Team}
-taxonomy:    v5
+taxonomy:    v6
 agent:       case-triage/{ISO-8601 UTC timestamp}
 ```
 
@@ -297,6 +341,7 @@ Rules:
   description back verbatim.
 - Values in the metadata block must be copied exactly from §4 — no invented team names.
 - `reason` must be one of the seven API Names from §2 — no other values are valid.
+- `type` must be one of the five API Names from §2b — no other values are valid.
 - `agent` is the run identifier plus an ISO-8601 UTC timestamp.
 - If an override from §5 fired, add an `override:` line naming it.
 - If confidence is below 0.80, prefix the summary line with `(unconfirmed)`.
@@ -306,46 +351,59 @@ Rules:
 ## 8. Worked examples
 
 **"Performance inadequate for second consecutive week"**
-→ Performance / Degraded output, Field Engineering, `Reason: Performance`, `recurring: true`.
+→ Performance / Degraded output, Field Engineering, `Reason: Performance`, `Type: Mechanical`, `recurring: true`.
 The repeat wording raises priority. Check for an existing open case on the same Asset
 before posting. Confidence would sit around 0.85 with load figures in the body, nearer
 0.65 with a bare subject line and no description.
 
 **"Seeking guidance on electrical wiring installation for GC5060"**
-→ Installation / Electrical wiring & termination, Applications Engineering, `Reason: Installation`.
+→ Installation / Electrical wiring & termination, Applications Engineering, `Reason: Installation`, `Type: Electrical`.
 Nothing is faulty; this is a pre-energisation question. The model number resolves cleanly
 to the generator line, which supports high confidence.
 
 **"Design issue with mechanical rotor"**
 → Read the body before accepting the subject at face value. If the customer is asserting a
 systemic fault or naming multiple serial numbers, it is Equipment Design / Rotating
-assembly, Product Engineering, `Reason: Equipment Design`. If it is one bearing that failed
-on one machine, it is Breakdown / Component failure (mechanical), `Reason: Breakdown`.
+assembly, Product Engineering, `Reason: Equipment Design`, `Type: Mechanical`. If it is one bearing that failed
+on one machine, it is Breakdown / Component failure (mechanical), `Reason: Breakdown`, `Type: Mechanical`.
 This case should typically land at 0.55–0.70 confidence and go out as a suggestion, not
 an auto-route.
 
 **"Generator won't start, completely dead since yesterday"**
-→ Breakdown / Complete equipment failure, Field Engineering, `Reason: Breakdown`.
+→ Breakdown / Complete equipment failure, Field Engineering, `Reason: Breakdown`, `Type: Mechanical`.
 Clear breakdown language with no ambiguity. Confidence 0.90+.
 
 **"Can't figure out how to configure multi-unit synchronisation"**
 → Equipment Complexity / Multi-unit configuration, Applications Engineering,
-`Reason: Equipment Complexity`. The equipment is installed and operational but the customer
+`Reason: Equipment Complexity`, `Type: Electronic`. The equipment is installed and operational but the customer
 is struggling with advanced configuration. Not Installation, not Breakdown.
 
 **"Your service engineer was excellent last week"**
-→ Feedback / Compliment / positive feedback, Customer Success, `Reason: Feedback`.
+→ Feedback / Compliment / positive feedback, Customer Success, `Reason: Feedback`, `Type: Other`.
 No technical issue to resolve.
 
 **"Maintenance guidelines for generator unclear"**
-→ Feedback / Documentation feedback, Technical Publications, `Reason: Feedback`. If the
+→ Feedback / Documentation feedback, Technical Publications, `Reason: Feedback`, `Type: Other`. If the
 ambiguity touches isolation, lockout, or a torque-critical step, add `safety-adjacent: true`
 and copy Field Engineering.
+
+**"Control board error code E-4501, display is blank"**
+→ Breakdown / Component failure (electrical), Field Engineering, `Reason: Breakdown`, `Type: Electronic`.
+The fault is in the electronic control system. Confidence 0.85+.
+
+**"Foundation cracking under generator pad"**
+→ Equipment Design / Structural / housing, Product Engineering, `Reason: Equipment Design`, `Type: Structural`.
+Structural concern with the mounting platform.
 
 ---
 
 ## 9. Changelog
 
+- **v6 (2026-08-12)** — Added Salesforce Case Type picklist (§2b) with five canonical
+  values: Mechanical, Electrical, Electronic, Structural, Other. Added type selection
+  rules and type mapping guidance to every taxonomy category in §4. Updated output format
+  (§7) to include `type` field. Updated all worked examples (§8) to include Type. Agent
+  must now set both Reason and Type on every classified case.
 - **v5 (2026-08-10)** — Restructured taxonomy to align with Salesforce `Reason` picklist.
   Seven top-level categories now map 1:1 to picklist API Names: Installation, Equipment
   Complexity, Performance, Breakdown, Equipment Design, Feedback, Other. Merged Warranty &
@@ -358,4 +416,4 @@ and copy Field Engineering.
 - **v3 (2026-02-14)** — Added Controls Support as a routing target.
 - **v2 (2025-09-30)** — Introduced confidence bands.
 
-<!-- Reviewed by Matt 11.08.26 12:05 -->
+<!-- Reviewed by Matt 12.08.26 11:59 -->

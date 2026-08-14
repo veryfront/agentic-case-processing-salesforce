@@ -70,5 +70,5 @@ Evals target the same agent definitions and check tool behaviour and output shap
 
 ## Run it without cloning
 
-[Use this template in Veryfront Studio](https://new.veryfront.com/?template=agentic-case-processing-salesforce)
+[Use this template in Veryfront Studio](https://new.veryfront.com/?template=agentic-case-processing-salesforce&agent=case-triage)
 — creates a new project in the browser, connect Salesforce, turn on the schedule. No local setup.

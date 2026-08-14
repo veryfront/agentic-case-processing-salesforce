@@ -1,11 +1,14 @@
 # Agentic Case Processing
 
-A [Veryfront](https://veryfront.com) template that triages new Salesforce cases with an agentic
+A [Veryfront](https://veryfront.org) template that triages new Salesforce cases with an agentic
 workforce, on a schedule. For each new case it assigns a category and type from your service
 taxonomy, names the team that should own it, sets the case `Reason` and `Type` fields, and records
 the verdict as a private case comment with a confidence score.
 
-![Architecture Overview](https://veryfront.org/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-light.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://veryfront.org/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-dark.png">
+  <img alt="Architecture Overview" src="https://veryfront.org/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-light.png">
+</picture>
 
 ## Project layout
 
@@ -42,7 +45,7 @@ the verdict as a private case comment with a confidence score.
 
 - A Salesforce org with API access — a free
   [Developer Edition](https://developer.salesforce.com/signup) org works.
-- A [Veryfront](https://veryfront.com) account.
+- A [Veryfront](https://veryfront.org) account.
 
 ## Getting started
 

@@ -5,7 +5,7 @@ workforce, on a schedule. For each new case it assigns a category and type from 
 taxonomy, names the team that should own it, sets the case `Reason` and `Type` fields, and records
 the verdict as a private case comment with a confidence score.
 
-![Architecture Overview](https://veryfront.org/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-light.png)
+![Architecture Overview](https://veryfront.com/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-light.png)
 
 ## Project layout
 

@@ -1,0 +1,6 @@
+# Local coding-agent and QA tooling state. Never belongs in the cloud project.
+# `veryfront push` ignores node_modules, dist, .cache, .veryfront, .env* and
+# *.local by default; these are the ones it does not know about.
+.omc
+.gstack
+dogfood-output

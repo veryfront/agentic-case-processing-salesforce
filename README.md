@@ -38,13 +38,13 @@ the verdict as a private case comment with a confidence score.
     └── api/ag-ui/route.ts                # AG-UI route
 ```
 
-## Getting started
-
-You need:
+## Prerequisites
 
 - A Salesforce org with API access — a free
   [Developer Edition](https://developer.salesforce.com/signup) org works.
 - A [Veryfront](https://veryfront.com) account.
+
+## Getting started
 
 ```bash
 npm install

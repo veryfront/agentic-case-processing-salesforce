@@ -1,6 +1,8 @@
 {
   "name": "agentic-case-processing",
   "version": "0.1.0",
+  "description": "Triage new Salesforce cases with an agentic workforce, on a schedule.",
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "veryfront dev",

@@ -9,4 +9,7 @@ export default schedule({
   schedule: "*/10 * * * *",
   timezone: "Europe/Berlin",
   target: { kind: "agent", id: "case-triage" },
+  input: {
+    _schedule_target: { conversationMode: "create_new" },
+  },
 });

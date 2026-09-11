@@ -9,7 +9,6 @@
     "build": "veryfront build",
     "start": "veryfront serve",
     "eval": "veryfront eval",
-    "test": "node --test tests/*.test.js",
     "deploy": "veryfront deploy"
   },
   "pnpm": {

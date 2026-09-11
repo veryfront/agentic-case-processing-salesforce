@@ -31,8 +31,6 @@ the verdict as a private case comment with a confidence score.
 │   └── mock-tools.ts
 ├── schedules/
 │   └── triage-new-cases.ts               # runs case-triage every 10 minutes
-├── tests/
-│   └── readme-contract.test.js            # guards the local and Cloud run paths
 └── app/
     ├── page.tsx                          # chat UI
     ├── layout.tsx

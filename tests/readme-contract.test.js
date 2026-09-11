@@ -11,20 +11,18 @@ function section(heading) {
   return readme.slice(start, next === -1 ? undefined : next);
 }
 
-test("documents an account-free local mock path", () => {
-  const local = section("## Run account-free local mock evals");
+test("documents local setup and eval commands", () => {
+  const local = section("## Getting started");
+  const evaluation = section("## Eval");
 
-  assert.match(local, /ANTHROPIC_API_KEY=<API_KEY>/);
-  assert.match(local, /npm run eval/);
-  assert.match(local, /evals\/mock-tools\.ts/);
-  assert.doesNotMatch(local, /npx veryfront login/);
-  assert.doesNotMatch(local, /npx veryfront push/);
+  assert.match(local, /npm i\n/);
+  assert.match(local, /npm run dev/);
+  assert.match(evaluation, /npm run eval/);
 });
 
-test("states why the live Salesforce app requires a backing service", () => {
-  const boundary = section("## Understand the standalone boundary");
+test("documents Cloud deployment and the template fork link", () => {
+  const cloud = section("## Deploy to Veryfront Cloud");
 
-  assert.match(boundary, /`salesforce__\*`/);
-  assert.match(boundary, /backing API or service layer/);
-  assert.match(boundary, /does not make Salesforce\s+requests/);
+  assert.match(cloud, /npm run deploy/);
+  assert.match(cloud, /Fork this template in \[Veryfront Studio\]\(https:\/\/new\.veryfront\.com\/\?template=agentic-case-processing-salesforce&agent=case-triage\)\./);
 });

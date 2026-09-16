@@ -1,4 +1,3 @@
-import "../globals.css";
 import { Head } from "veryfront/head";
 
 export default function RootLayout({

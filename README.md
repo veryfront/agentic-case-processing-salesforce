@@ -7,37 +7,6 @@ the verdict as a private case comment with a confidence score.
 
 ![Architecture Overview](https://veryfront.com/images/agentic-case-processing-in-salesforce-with-veryfront/architecture-light.png)
 
-## Project layout
-
-```
-.
-├── agents/
-│   ├── case-triage.ts                    # orchestrator
-│   ├── case-ingest.ts                    # fetches the case, redacts PII
-│   ├── case-classify.ts                  # classifies against the taxonomy
-│   └── case-dispose.ts                   # sets Reason + Type, posts the comment
-├── skills/                               # the procedures each agent follows
-│   ├── triage-run-loop/SKILL.md
-│   ├── case-normalise-redact/SKILL.md
-│   ├── case-classification/SKILL.md
-│   └── case-comment-writer/SKILL.md
-├── knowledge/
-│   └── case-triage-taxonomy.md           # the classification + routing spec
-├── evals/
-│   ├── case-triage.eval.ts
-│   ├── case-ingest.eval.ts
-│   ├── case-classify.eval.ts
-│   ├── case-dispose.eval.ts
-│   └── mock-tools.ts
-├── schedules/
-│   └── triage-new-cases.ts               # runs case-triage every 10 minutes
-└── app/
-    ├── page.tsx                          # chat UI
-    ├── layout.tsx
-    ├── markdown-renderer.tsx
-    └── api/ag-ui/route.ts                # AG-UI route
-```
-
 ## Getting started
 
 Install the dependencies and start the app locally.

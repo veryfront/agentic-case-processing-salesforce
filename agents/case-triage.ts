@@ -14,16 +14,16 @@ export default agent({
   },
   suggestions: [
     {
-      "title": "Triage a case by ID",
-      "prompt": "Triage Salesforce case 5001x00000AbCdE — classify it and post the triage comment."
+      "title": "Triage the latest case",
+      "prompt": "Find the latest open case and triage it."
     },
     {
       "title": "Triage latest open cases",
-      "prompt": "Find the 5 most recent open cases and triage each one."
+      "prompt": "Find the 5 latest open cases and triage each one."
     },
     {
-      "title": "Triage a case by number",
-      "prompt": "Look up case number 00001234 and run triage on it."
+      "title": "Triage the oldest case",
+      "prompt": "Find the oldest open case and triage it."
     }
   ],
 });

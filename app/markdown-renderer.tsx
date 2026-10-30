@@ -1,6 +1,6 @@
 "use client";
 
-import ReactMarkdown from "react-markdown@9.0.3";
+import ReactMarkdown from "react-markdown@9.1.0";
 import remarkGfm from "remark-gfm@4.0.1";
 import type { MarkdownRendererProps } from "veryfront/markdown";
 

@@ -17,9 +17,9 @@
     ]
   },
   "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-markdown": "9.0.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "9.1.0",
     "remark-gfm": "4.0.1",
     "veryfront": "0.1.1287"
   }

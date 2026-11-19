@@ -6,5 +6,8 @@ export default schedule({
   schedule: "*/10 * * * *",
   timezone: "Europe/Berlin",
   target: { kind: "agent", id: "case-triage", conversationMode: "create_new" },
-  agentMessage: { prompt: "Triage every open case." },
+  agentMessage: { prompt: "Triage the open cases that have not been triaged yet." },
+  concurrencyPolicy: "Forbid",
+  timeoutSeconds: 540,
+  integrationRequirements: [{ integration: "salesforce" }],
 });

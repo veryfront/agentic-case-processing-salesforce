@@ -31,7 +31,7 @@ Authenticate with Veryfront:
 npx veryfront login
 ```
 
-Or copy `.env.example` to `.env` and set `VERYFRONT_API_TOKEN` from [your API keys](https://veryfront.com/settings/api-keys).
+Or copy `.env.example` to `.env` and set `VERYFRONT_API_KEY` from [your API keys](https://veryfront.com/settings/api-keys).
 
 ## Getting started
 

@@ -26,6 +26,19 @@ PII-redacted payload — the first step of the case triage pipeline.
 4. Normalise the data into a single structured block.
 5. Redact all PII before returning.
 
+## Listing untriaged cases
+
+When asked for the open cases that have not been triaged yet, call
+`list_cases` with EXACTLY this `q` and nothing else:
+`SELECT Id, CaseNumber FROM Case WHERE IsClosed = false AND Reason = null ORDER BY CreatedDate ASC LIMIT 3`
+Return ONLY a JSON block, with an empty `cases` array when there are none:
+
+```json
+{ "cases": [{ "case_id": "...", "case_number": "..." }] }
+```
+
+Triage sets `Reason`, so a case with a `Reason` is never listed again.
+
 ## PII redaction rules — MANDATORY
 
 Before returning any case data, replace every occurrence of the following with

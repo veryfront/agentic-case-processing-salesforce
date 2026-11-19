@@ -53,6 +53,25 @@ export const listCases = tool({
   }),
 });
 
+export const listUntriagedCases = tool({
+  id: "salesforce__list_cases",
+  description: "List open Salesforce case fixtures with no Reason.",
+  inputSchema: defineSchema((v) =>
+    v.object({
+      q: v.string(),
+    })
+  )(),
+  execute: async ({ q }) => {
+    if (!/IsClosed = false/.test(q) || !/Reason = null/.test(q) || !/LIMIT 3\b/.test(q)) {
+      throw new Error("List untriaged cases with IsClosed = false AND Reason = null and LIMIT 3.");
+    }
+
+    return {
+      records: [{ Id: "500000000000002", CaseNumber: "00001235" }],
+    };
+  },
+});
+
 export const searchKnowledge = tool({
   id: "search_knowledge",
   description: "Discover the canonical case triage taxonomy fixture.",
@@ -177,6 +196,45 @@ export const invokeAgent = tool({
       category: "Breakdown",
       team: "Field Engineering",
       comment: "[Triage] Breakdown → Complete equipment failure",
+    };
+  },
+});
+
+// A schedule run: one case is listed, but it was triaged already (Reason set, `[Triage]` comment).
+export const invokeAgentAlreadyTriaged = tool({
+  id: "invoke_agent",
+  description: "Invoke a case triage specialist fixture whose only listed case is already triaged.",
+  inputSchema: defineSchema((v) =>
+    v.object({
+      agent_id: v.string(),
+      description: v.string(),
+      prompt: v.string(),
+      context: v.record(v.string(), v.unknown()),
+    })
+  )(),
+  execute: async ({ agent_id, prompt }) => {
+    if (agent_id !== "case-ingest") {
+      throw new Error(`${agent_id} must not run for a case that is already triaged.`);
+    }
+
+    if (/not been triaged/i.test(prompt)) {
+      return { cases: [{ case_id: "500000000000002", case_number: "00001235" }] };
+    }
+
+    return {
+      case_id: "500000000000002",
+      case_number: "00001235",
+      status: "New",
+      reason: "Breakdown",
+      subject: "Generator stopped for [NAME]",
+      description: "[NAME] reports the generator is dead.",
+      comments: [
+        {
+          body: "[Triage] Breakdown → Complete equipment failure",
+          created_date: "2026-11-19T09:00:00Z",
+          is_public: false,
+        },
+      ],
     };
   },
 });

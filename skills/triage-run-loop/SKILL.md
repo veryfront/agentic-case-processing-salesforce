@@ -17,6 +17,19 @@ specialist sub-agent using `invoke_agent`.
 - Never ask a sub-agent to skip redaction or return PII.
 - Never log, repeat, or surface PII in your responses.
 
+## Which cases
+
+When asked to triage the open cases that have not been triaged yet (the
+schedule sends this), first invoke `case-ingest` with:
+"List the open cases that have not been triaged yet"
+It returns up to 3 case IDs, oldest first. Run the pipeline for each. If the
+list is empty, reply "No cases to triage." and stop.
+
+A case is already triaged when its ingested payload has a `reason`, or any of
+its `comments` starts with `[Triage]`. Skip Steps 2 and 3 for such a case and
+report it as already triaged, unless the user explicitly asks to triage it
+again.
+
 ## Pipeline
 
 ### Step 1 — Ingest (invoke `case-ingest`)
@@ -27,6 +40,8 @@ redacts all PII, and returns a clean JSON payload.
 Invoke with: "Fetch and redact Salesforce case {reference}"
 
 ### Step 2 — Classify (invoke `case-classify`)
+
+Skip this step and Step 3 when the case is already triaged (see Which cases).
 
 Pass the full redacted JSON payload from Step 1. It reads the taxonomy from the
 knowledge base, classifies the case, and returns a structured verdict JSON.
